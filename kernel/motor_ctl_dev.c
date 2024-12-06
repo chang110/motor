@@ -3,11 +3,14 @@
 #include <linux/cdev.h>
 #include <linux/fs.h>
 #include <linux/mutex.h>
+#include <wiringPi.h>
 
 
-#define MOTOR_GPIO_MAX_PIN 40
-#define DEVICE_NAME "motor_ctl"
-#define DEFAULT_SETP_LONG 1.8
+#define MOTOR_GPIO_MAX_PIN      40
+#define DEVICE_NAME             "motor_ctl"
+#define DEFAULT_SETP_LONG       1.8
+#define DEFAULT_SUBDIVIDE       1
+#define DEFAULT_ROTATE_SPEED    0.5
 
 static DEFINE_MUTEX(motor_ctl_lock);
 
@@ -23,6 +26,8 @@ struct motor_ctl_drv_info{
 struct motor_data{
     double step_long;
     unsigned short subdivide;
+    unsigned short turn_to;
+    double rotate_speed;
 };
 
 static struct motor_ctl_drv_info motor_ctl_drv;
@@ -79,11 +84,32 @@ err_chrdev_unreg:
 
 static int motor_ctl_open (struct inode *indoe, struct file *filp)
 {
+
     printk("motor_ctl_open\n");
+
+    if (wiringPiSetup() < 0){
+        printk("QAT: wiringPiSetup failed for motor_ctl\n");
+        return -EFAULT;
+    };
+
+    struct motor_data *prv_md = kmalloc((sizeof(struct motor_data), GFP_KERNEL);
+    if (!prv_md){
+        printk("QAT: kmalloc failed for motor_ctl\n");
+        return -ENOMEM;
+    }
+	memset(&uart, 0, sizeof(uart));
+
+    prv_md->step_long = DEFAULT_SETP_LONG;
+    prv_md->subdivide = DEFAULT_SUBDIVIDE;
+    prv_md->turn_to = 0;
+    prv_md->rotate_speed = DEFAULT_ROTATE_SPEED;
+
+    filp->private_data = prv_md;
     return 0;
 }
 static int motor_ctl_release (struct inode *inode, struct file *filp)
 {
+    kfree(filp->private_data);
     printk("motor_ctl_release\n");
     return 0;
 }
