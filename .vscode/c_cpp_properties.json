@@ -1,0 +1,26 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/usr/src/linux-headers-6.6.51+rpt-common-rpi/include",
+                "/usr/src/linux-headers-6.6.51+rpt-rpi-v8/include",
+                "/usr/src/linux-headers-6.6.51+rpt-rpi-v8/arch/arm64/include",
+                "/usr/src/linux-headers-6.6.51+rpt-common-rpi/arch/arm64/include",
+                "/usr/src/linux-headers-6.6.51+rpt-rpi-v8/arch/arm64/include/generated"
+            ],
+            "defines": [
+                "KBUILD_MODNAME=\"motor_dev_module\"",
+                "__GNUC__",
+                "__KERNEL__"
+            ],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c17",
+            "cppStandard": "gnu++17",
+            "intelliSenseMode": "linux-gcc-arm64",
+            "configurationProvider": "ms-vscode.makefile-tools"
+        }
+    ],
+    "version": 4
+}
